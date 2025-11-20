@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title> Image Gallery</title>
+
+  <style>
+    :root{
+      --page-max:1100px;
+      --gap:18px;
+      --bg:#ffffff;
+      --card-bg:#fff;
+      --muted:#666;
+      --accent:#062922;
+      --radius:12px;
+      --shadow: 0 8px 30px rgba(20,30,60,0.08);
+      --transition: 300ms cubic-bezier(.2,.9,.3,1);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+      background:var(--bg);
+      color:#111827;
+      display:flex;
+      justify-content:center;
+      padding:40px 20px;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:var(--page-max);
+      margin:0 auto;
+    }
+
+    header{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:22px}
+    h1{font-size:28px;margin:0}
+
+
+    .controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0}
+    .group{display:flex;gap:8px;align-items:center}
+    .btn{
+      background:#111827;color:#fff;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:600;
+      transition:transform var(--transition), box-shadow var(--transition);
+    }
+    .btn.secondary{background:#f3f4f6;color:#111;border:1px solid #e6e9ef}
+    .btn:hover{transform:translateY(-3px)}
+    .btn[data-active="true"]{background:var(--accent);color:#fff}
+
+ 
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap:var(--gap);
+    }
+
+    .card{
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      display:block;text-decoration:none;color:inherit;
+      transition:transform var(--transition), box-shadow var(--transition);
+    }
+    .card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(20,30,60,0.12)}
+
+    .thumb{
+      width:100%;
+      aspect-ratio: 16/9;
+      object-fit:cover;
+      transition:transform 600ms cubic-bezier(.2,.9,.3,1);
+    }
+    .card:hover .thumb{transform:scale(1.06)}
+
+    .meta{padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+    .title{font-size:15px;font-weight:600}
+    .tag{font-size:13px;color:var(--muted);padding:4px 8px;border-radius:999px;border:1px solid #eef2ff}
+
+   
+    .lightbox{
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:9999;
+      background:rgba(0,0,0,0.7);
+      padding:30px;
+    }
+    .lightbox.open{display:flex}
+    .lb-inner{max-width:1200px;width:100%;max-height:90vh;display:flex;flex-direction:column;gap:12px;align-items:center}
+    .lb-img{
+      width:100%;max-height:78vh;border-radius:10px;
+      box-shadow:0 30px 80px rgba(0,0,0,0.6);
+      opacity:0;transform:translateY(10px);
+      transition:opacity .3s ease, transform .3s ease;
+    }
+    .lightbox.open .lb-img{opacity:1;transform:translateY(0)}
+
+    .lb-caption{display:flex;justify-content:space-between;color:#fff;width:100%;font-size:14px}
+    .circle{
+      width:40px;height:40px;background:rgba(255,255,255,0.1);border:none;border-radius:8px;color:#fff;
+      cursor:pointer;font-size:16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Image Gallery</h1>
+    </header>
+
+    <div class="controls">
+      <div class="group">
+        <button class="btn" data-filter="all" data-active="true">All</button>
+        <button class="btn secondary" data-filter="nature">Nature</button>
+        <button class="btn secondary" data-filter="city">City</button>
+        <button class="btn secondary" data-filter="people">People</button>
+      </div>
+
+      <div class="group">
+        <button class="btn secondary" id="viewAll">Open first in new tab</button>
+      </div>
+    </div>
+
+    <section class="gallery" id="gallery">
+      <a class="card" data-category="nature" href="#">
+        <img class="thumb" src="nature.png" />
+        <div class="meta"><div class="title">Mountain Lake</div><div class="tag">Nature</div></div>
+      </a>
+
+      <a class="card" data-category="nature" href="#">
+        <img class="thumb" src="bird.png" />
+        <div class="meta"><div class="title">Bird</div><div class="tag">Nature</div></div>
+      </a>
+
+      <a class="card" data-category="city" href="#">
+        <img class="thumb" src="city.png" />
+        <div class="meta"><div class="title">Mumbai</div><div class="tag">City</div></div>
+      </a>
+
+       <a class="card" data-category="nature" href="#">
+        <img class="thumb" src="sky.png" />
+        <div class="meta"><div class="title">Sky</div><div class="tag">Nature</div></div>
+      </a>
+
+      <a class="card" data-category="nature" href="#">
+        <img class="thumb" src="forest.png" />
+        <div class="meta"><div class="title">Forest Path</div><div class="tag">Nature</div></div>
+      </a>
+
+      <a class="card" data-category="city" href="#">
+        <img class="thumb" src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1400" />
+        <div class="meta"><div class="title">NewYork</div><div class="tag">City</div></div>
+      </a>
+
+      <a class="card" data-category="people" href="#">
+        <img class="thumb" src="smilling.png" />
+        <div class="meta"><div class="title">Smiling</div><div class="tag">People</div></div>
+      </a>
+      <a class="card" data-category="nature" href="#">
+        <img class="thumb" src="galaxy.png" />
+        <div class="meta"><div class="title">Galaxy</div><div class="tag">Nature</div></div>
+      </a>
+
+      </section>
+  </div>
+  <div class="lightbox" id="lightbox">
+    <div class="lb-inner">
+      <img class="lb-img" id="lb-img" alt="">
+      <div class="lb-caption">
+        <span id="lb-title"></span>
+        <div>
+          <button class="circle" id="lb-prev">◀</button>
+          <button class="circle" id="lb-next">▶</button>
+          <button class="circle" id="lb-close">✕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    (function(){
+      const gallery = document.getElementById("gallery");
+      const cards = Array.from(gallery.querySelectorAll(".card"));
+      const filters = document.querySelectorAll("[data-filter]");
+      const viewAllBtn = document.getElementById("viewAll");
+
+      const lightbox = document.getElementById("lightbox");
+      const lbImg = document.getElementById("lb-img");
+      const lbTitle = document.getElementById("lb-title");
+
+      const btnNext = document.getElementById("lb-next");
+      const btnPrev = document.getElementById("lb-prev");
+      const btnClose = document.getElementById("lb-close");
+
+      let visible = [...cards];
+      let current = 0;
+
+      // OPEN LIGHTBOX
+      cards.forEach((card, i)=>{
+        card.addEventListener("click", e=>{
+          e.preventDefault();
+          open(i);
+        });
+      });
+
+      function open(i){
+        current = i;
+        const img = cards[i].querySelector(".thumb");
+
+        lbImg.src = img.src;
+        lbTitle.textContent = cards[i].querySelector(".title").textContent;
+
+        lightbox.classList.add("open");
+      }
+
+      function close(){
+        lightbox.classList.remove("open");
+      }
+
+      function updateVisible(){
+        visible = cards.filter(c=>c.style.display!=="none");
+      }
+
+      function next(){
+        updateVisible();
+        let idx = visible.indexOf(cards[current]);
+        current = cards.indexOf(visible[(idx+1)%visible.length]);
+        open(current);
+      }
+
+      function prev(){
+        updateVisible();
+        let idx = visible.indexOf(cards[current]);
+        current = cards.indexOf(visible[(idx-1+visible.length)%visible.length]);
+        open(current);
+      }
+
+      btnClose.onclick = close;
+      btnNext.onclick = next;
+      btnPrev.onclick = prev;
+
+      lightbox.addEventListener("click", e=>{
+        if(e.target===lightbox) close();
+      });
+
+      document.addEventListener("keydown", e=>{
+        if(!lightbox.classList.contains("open")) return;
+        if(e.key==="Escape") close();
+        if(e.key==="ArrowRight") next();
+        if(e.key==="ArrowLeft") prev();
+      });
+
+   
+      filters.forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const cat = btn.dataset.filter;
+
+          filters.forEach(b=>b.removeAttribute("data-active"));
+          btn.setAttribute("data-active","true");
+
+          cards.forEach(c=>{
+            c.style.display = (cat==="all" || c.dataset.category===cat) ? "block" : "none";
+          });
+
+          updateVisible();
+        });
+      });
+
+      updateVisible();
+
+     
+      viewAllBtn.addEventListener("click", ()=>{
+        const first = visible[0];
+        if(first){
+          window.open(first.querySelector(".thumb").src, "_blank");
+        }
+      });
+
+     
+      let startX = 0;
+      lbImg.addEventListener("touchstart", e=>{
+        startX = e.touches[0].clientX;
+      });
+
+      lbImg.addEventListener("touchend", e=>{
+        let dx = e.changedTouches[0].clientX - startX;
+        if(Math.abs(dx)>50){
+          dx < 0 ? next() : prev();
+        }
+      });
+
+    })();
+  </script>
+
+</body>
+</html>
+
